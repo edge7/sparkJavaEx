@@ -5,8 +5,11 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.types.IntegerType;
-
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
+import java.io.Serializable;
 import java.util.List;
+
 
 class Main
 {
@@ -34,7 +37,10 @@ class Main
         Dataset<Row> filter3 = filter2.select("name", "age").filter("age > 30");
         List<Row> rowJavaRDD = filter3.toJavaRDD().collect();
         rowJavaRDD.forEach((i) -> System.out.println(i));
-        System.out.println("fine");
+        Encoder<Person> personEncoder = Encoders.bean(Person.class);
+        Dataset<Person> as = filter3.as(personEncoder);
+        List<Person> persons = as.collectAsList();
+        System.out.println("enrico");
 
 
     }
